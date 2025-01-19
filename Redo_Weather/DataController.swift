@@ -6,3 +6,18 @@
 //
 
 import Foundation
+import CoreData
+
+class DataController : ObservableObject {
+    var context = NSPersistentContainer(name: "WeatherModelData")
+    
+    init() {
+        context.loadPersistentStores{desription, error in
+            if error != nil {
+                fatalError("Error in loading")
+            } else {
+                print("Successfully loaded")
+            }
+        }
+    }
+}
