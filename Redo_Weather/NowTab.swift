@@ -29,7 +29,7 @@ struct NowTab: View {
                             HourlyForecast(weatherService: weatherService)
                             EightDayForecastView(weatherService: weatherService)
                             HStack {
-                                HomeCards(value: Int(weather.current.feelsLike), symbol: "°", title: "FEELS LIKE", description:"", icon: "thermometer")
+                                HomeCards(value: Int(weather.current.feelsLike), symbol: "°", title: "FEELS LIKE", description: weather.daily[0].summary, icon: "thermometer")
                                 HomeCards(value: weather.current.humidity , symbol: "%", title: "HUMIDITY", description: "", icon: "humidity.fill")
                             }
                             HStack {
@@ -58,20 +58,32 @@ struct NowTab: View {
             .toolbar{
                 ToolbarItem(placement: .topBarTrailing) {
                     if let cityName = weatherService.cityData?.name{
-                        Button("Add"){
-                            let newcity = City(context: managedObject)
-                            newcity.name = cityName
-                            newcity.latitude = weatherService.cityData?.lat ?? 0
-                            newcity.longitude = weatherService.cityData?.lon ?? 0
-                            
-                            do{
-                                try managedObject.save()
-                                print("Saved cities Successfully\(cities.count)")
-                            } catch {
-                                print("Failed to save")
-                            }
-                            
-                        }.foregroundStyle(.white)
+                        if !cities.contains(where: { $0.name == cityName }) {
+                            Button("Add"){
+                                let newcity = City(context: managedObject)
+                                newcity.name = cityName
+                                newcity.latitude = weatherService.cityData?.lat ?? 0
+                                newcity.longitude = weatherService.cityData?.lon ?? 0
+                                do{
+                                    try managedObject.save()
+                                    print("Saved cities Successfully\(cities.count)")
+                                } catch {
+                                    print("Failed to save")
+                                }
+                                
+                            }.foregroundStyle(.white)
+                        }
+                    }
+                }
+                ToolbarItem(placement: .topBarLeading){
+                    if let cityName = weatherService.cityData?.name,
+                       let cityToRemove = cities.first(where: { $0.name ==
+                           cityName }){
+                        Button("Remove"){
+                            managedObject.delete(cityToRemove)
+                            try? managedObject.save()
+                        }
+                        .foregroundStyle(.red)
                     }
                 }
             }

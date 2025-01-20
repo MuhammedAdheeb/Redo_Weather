@@ -22,12 +22,13 @@ struct ContentView: View {
                 .tabItem{
                     Label("Places", systemImage: "map")
                 }
+                .environment(\.managedObjectContext, dataController.context.viewContext)
             
             StoredPlacesTab()
                 .tabItem{
                     Label("Saved Places", systemImage: "calendar")
                 }
-            
+                .environment(\.managedObjectContext, dataController.context.viewContext)
         }
     }
 }

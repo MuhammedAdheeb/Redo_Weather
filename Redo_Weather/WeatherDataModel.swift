@@ -161,6 +161,7 @@ enum Description: String, Codable {
 struct Daily: Codable, Identifiable {
     let id = UUID()
     let dt, sunrise, sunset, moonrise: Int
+    let summary: String
     let moonset: Int
     let moonPhase: Double
     let temp: Temp
@@ -179,6 +180,7 @@ struct Daily: Codable, Identifiable {
     }
     enum CodingKeys: String, CodingKey {
         case dt, sunrise, sunset, moonrise, moonset
+        case summary
         case moonPhase = "moon_phase"
         case temp
         case feelsLike = "feels_like"
